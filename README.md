@@ -1,50 +1,144 @@
-# Microservice Chat Application
+# 🚀 Microservice Chat Application
 
-Welcome to the **Microservice Chat Application** repository—a modern, scalable, and maintainable chat application architecture based on microservices.
+> A scalable, modern, and high-performance chat architecture built with Node.js and TypeScript.
 
-## Overview
+![Status](https://img.shields.io/badge/Status-Development-blue?style=flat-square)
+![License](https://img.shields.io/badge/License-ISC-green?style=flat-square)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript&style=flat-square)
+![pnpm](https://img.shields.io/badge/pnpm-Workspaces-orange?style=flat-square)
 
-This project serves as a foundation for a distributed chat application, leveraging a microservices architecture. Each service is independent, allowing for autonomous development, deployment, and scaling.
+## 📖 Overview
 
-## Project Structure
+This repository demonstrates a robust **microservices architecture** designed for real-time communication. It leverages a monorepo structure managed by **pnpm**, ensuring code sharing and modular development across independent services.
 
-- **services/**: Contains the main microservices:
-  - `user-service`: User management.
-  - `gateway-service`: Gateway for client-to-service communication.
-  - `chat-service`: Handles messages and chat rooms.
-  - `auth-service`: Authentication and authorization.
-- **packages/common**: Shared code and utilities across services.
+Key features:
 
-## Technologies
+- **Modular Services**: Independent architecture designed for scalability.
+- **Type Safety**: End-to-end type safety with **TypeScript** and **Zod** for environment validation.
+- **Shared Libraries**: Common logic (logging, env parsing) centralized in `packages/common`.
+- **Developer Experience**: Optimized workflow with strict linting and formatting.
 
-- **Node.js** + **TypeScript** for all services.
-- **pnpm** as the package and workspace manager.
-- **ESLint** and **Prettier** for code quality and formatting.
-- Extensible architecture, ready for CI/CD integration.
+## 🏗️ Architecture
 
-## Main Scripts
+The system follows an event-driven and gateway-aggregated pattern. Below is a high-level view of the system components:
 
-- `pnpm build`: Builds all services.
-- `pnpm dev`: Starts all services in development mode.
-- `pnpm lint`: Lints all code.
-- `pnpm format`: Formats the codebase.
-- `pnpm test`: Runs tests.
+```mermaid
+graph TD
+    Client[📱 Client App]
+    Gateway[🌐 Gateway Service]
+    Auth[🔐 Auth Service]
+    User[👤 User Service]
+    Chat[💬 Chat Service]
+    DB[(🗄️ Database)]
+    Cache[(⚡ Redis Cache)]
 
-## Getting Started
+    Client -->|HTTP/WS| Gateway
+    Gateway -->|gRPC/HTTP| Auth
+    Gateway -->|gRPC/HTTP| User
+    Gateway -->|gRPC/HTTP| Chat
 
-1. Install dependencies:
-   ```sh
+    Auth --> DB
+    User --> DB
+    Chat --> DB
+    Chat --> Cache
+
+    subgraph Core Services
+        Auth
+        User
+        Chat
+    end
+
+    classDef service fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef storage fill:#ff9,stroke:#333,stroke-width:2px;
+    class Gateway,Auth,User,Chat service;
+    class DB,Cache storage;
+```
+
+### 📩 Message Flow
+
+A simplified sequence of how a real-time message is processed:
+
+```mermaid
+sequenceDiagram
+    participant U as 👤 User
+    participant G as 🌐 Gateway
+    participant A as 🔐 Auth
+    participant C as 💬 Chat Service
+    participant R as ⚡ Redis
+
+    U->>G: Send Message (Token, Content)
+    G->>A: Validate Token
+    A-->>G: Token Valid
+    G->>C: Push Message
+    C->>R: Publish Event
+    C-->>U: Ack Message
+    R-->>G: Broadcast to Subscribers
+    G-->>OtherUsers: Deliver Message
+```
+
+## 🛠️ Tech Stack
+
+- **Runtime**: Node.js
+- **Language**: TypeScript
+- **Package Manager**: pnpm (Workspaces)
+- **Validation**: Zod (Schema-based environment & data validation)
+- **Logging**: Pino (High-performance structure logging)
+- **Code Quality**: ESLint, Prettier
+
+## 📂 Project Structure
+
+```bash
+microservice-chat-application/
+├── packages/           # Shared libraries
+│   └── common/        # Shared utilities (e.g., Zod env parser, Logger)
+├── services/          # Microservices
+│   ├── auth-service/    # Authentication & Authorization
+│   ├── chat-service/    # Real-time messaging logic
+│   ├── gateway-service/ # API Gateway (HTTP/WebSocket)
+│   └── user-service/    # User profile management
+├── package.json       # Root scripts
+└── pnpm-workspace.yaml
+```
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Node.js** (Latest LTS recommended)
+- **pnpm** installed globally (`npm i -g pnpm`)
+
+### Installation
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone <repo-url>
+   cd microservice-chat-application
+   ```
+
+2. **Install dependencies:**
+   This command installs dependencies for all packages and services.
+
+   ```bash
    pnpm install
    ```
-2. Start the development environment:
-   ```sh
+
+3. **Start Development:**
+   Runs all services in development mode.
+   ```bash
    pnpm dev
    ```
 
-## Contributing
+## 🤝 Contributing
 
-Contributions are welcome! Please open an issue or pull request for suggestions and improvements.
+Contributions are welcome! Please follow these steps:
 
----
+1.  Fork the Project
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Push to the Branch (`git push origin feature/AmazingFeature`)
+5.  Open a Pull Request
 
-**License:** ISC
+## 📄 License
+
+Distributed under the ISC License.
