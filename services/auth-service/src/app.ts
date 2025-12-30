@@ -1,3 +1,4 @@
+import { errorHandler } from "@/middleware/error-handler";
 import cors from "cors";
 import express, { type Application } from "express";
 import helmet from "helmet";
@@ -10,7 +11,7 @@ export const createApp = (): Application => {
     cors({
       origin: "*",
       credentials: true,
-    }),
+    })
   );
 
   app.use(express.json());
@@ -19,6 +20,8 @@ export const createApp = (): Application => {
   app.use((_req, res) => {
     res.status(404).send({ message: "Not Found" });
   });
+
+  app.use(errorHandler);
 
   return app;
 };

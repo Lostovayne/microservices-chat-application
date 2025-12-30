@@ -9,7 +9,9 @@
     "dev": " pnpm -r --workspace-root=false run dev",
     "lint": "pnpm -r --workspace-root=false run lint",
     "format": "pnpm -r --workspace-root=false run format",
-    "test": "pnpm -r --workspace-root=false run test"
+    "test": "pnpm -r --workspace-root=false run test",
+    "build:packages": "pnpm --filter ./packages/common/ build",
+    "service:auth": "pnpm --filter ./services/auth-service/ dev"
   },
   "keywords": [],
   "author": "",
