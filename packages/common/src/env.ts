@@ -10,7 +10,7 @@ type SchemaOutput<TSchema extends ZodRawShape> = z.output<ZodObject<TSchema>>;
 
 export const createEnv = <TSchema extends ZodRawShape>(
   schema: ZodObject<TSchema>,
-  options: EnvOptions = {},
+  options: EnvOptions = {}
 ): SchemaOutput<TSchema> => {
   const { source = process.env, serviceName = "service" } = options;
 
@@ -19,7 +19,7 @@ export const createEnv = <TSchema extends ZodRawShape>(
   if (!parsed.success) {
     const formatedErrors = z.treeifyError(parsed.error);
     throw new Error(
-      `[${serviceName}] Environment variable validation failed: ${JSON.stringify(formatedErrors, null, 2)}`,
+      `[${serviceName}] Environment variable validation failed: ${JSON.stringify(formatedErrors, null, 2)}`
     );
   }
   return parsed.data;
